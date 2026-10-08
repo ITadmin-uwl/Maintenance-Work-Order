@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underwater World Langkawi - Maintenance Portal</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #17a2b8;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #e9ecef; padding: 20px; color: var(--dark); }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px; }
+        header h1 { color: var(--primary); font-size: 24px; }
+        header p { color: #6c757d; font-size: 14px; margin-top: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        .card { background: var(--light); padding: 15px; border-radius: 6px; border: 1px solid #dee2e6; }
+        .card h2 { font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; }
+        textarea { resize: vertical; height: 80px; }
+        button { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; font-size: 14px; }
+        button:hover { background: #004085; }
+        .filters { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: flex-between; background: #e2e3e5; padding: 10px; border-radius: 6px; }
+        .filters select { width: auto; display: inline-block; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th, td { padding: 10px; border-bottom: 1px solid #dee2e6; }
+        th { background-color: #0056b3; color: white; }
+        tr:hover { background-color: rgba(0,0,0,0.02); }
+        .badge { padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 11px; display: inline-block; color: white; }
+        .bg-low { background-color: var(--secondary); }
+        .bg-medium { background-color: var(--warning); color: #212529; }
+        .bg-high { background-color: #fd7e14; }
+        .bg-critical { background-color: var(--danger); }
+        .bg-pending { background-color: #6c757d; }
+        .bg-progress { background-color: #007bff; }
+        .bg-completed { background-color: var(--success); }
+        .actions-cell { display: flex; gap: 5px; }
+        .repair-actions { display: grid; gap: 6px; margin-top: 6px; }
+        .photo-list { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .photo-proof { width: 72px; height: 54px; object-fit: cover; border-radius: 4px; border: 1px solid #ced4da; display: block; }
+        .photo-item small { display: block; margin-bottom: 3px; color: #6c757d; }
+        .proof-input { font-size: 11px; padding: 5px; }
+        .btn-sm { padding: 4px 8px; font-size: 11px; width: auto; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #218838; }
+        .btn-warning { background: var(--warning); color: #212529; }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #bd2130; }
+        .export-btn { background: #6c757d; width: auto; margin-left: auto; }
+        .admin-btn { background: #343a40; width: auto; }
+        .admin-active { background: var(--success); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Underwater World Langkawi - Maintenance Portal</h1>
+        <p>Shared Live Work Order Log for Requesters & Maintenance Crew</p>
+    </header>
+
+    <div class="grid">
+        <!-- Input Form Card -->
+        <div class="card">
+            <h2>Log New Work Order</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="requester">Requested By *</label>
+                    <input type="text" id="requester" required placeholder="Your Name / Department">
+                </div>
+                <div class="form-group">
+                    <label for="location">Zone / Location *</label>
+                    <select id="location" required>
+                        <option value="">-- Select Location --</option>
+                        <option value="Sub-Antarctic (Penguin Pavilion)">Sub-Antarctic (Penguin Pavilion)</option>
+                        <option value="Preview Tank / Tunnel">Preview Tank / Tunnel</option>
+                        <option value="River Ecosystem Area">River Ecosystem Area</option>
+                        <option value="Tropical Rainforest Section">Tropical Rainforest Section</option>
+                        <option value="Coral Reef & Invertebrate Tank">Coral Reef & Invertebrate Tank</option>
+                        <option value="Oceanarium Main Tank">Oceanarium Main Tank</option>
+                        <option value="Life Support Systems (LSS) Pump Room">Life Support Systems (LSS) Pump Room</option>
+                        <option value="Gift Shop & Public Restrooms">Gift Shop & Public Restrooms</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="asset">Asset / Equipment Type</label>
+                    <input type="text" id="asset" placeholder="e.g. Chiller, Acrylic Panel, Filter Pump">
+                </div>
+                <div class="form-group">
+                    <label for="priority">Priority Level *</label>
+                    <select id="priority" required>
+                        <option value="Low">Low (General Repair)</option>
+                        <option value="Medium">Medium (Affects Display Quality)</option>
+                        <option value="High">High (Urgent - System Issue)</option>
+                        <option value="Critical">Critical (Animal Life Support Failure)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Issue Description *</label>
+                    <textarea id="description" required placeholder="Describe what needs repair..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beforePhoto">Issue Photo (Optional)</label>
+                    <input type="file" id="beforePhoto" accept="image/*" capture="environment">
+                </div>
+                <button type="submit">Submit Request</button>
+            </form>
+        </div>
+
+        <!-- Dashboard / Tracking Table Card -->
+        <div class="card">
+            <h2>Active Work Orders Dashboard</h2>
+            <div class="filters">
+                <div>
+                    <label style="display:inline; margin-right:5px;">Filter Status:</label>
+                    <select id="statusFilter" onchange="renderTable()">
+                        <option value="All">All Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <button onclick="exportToCSV()" class="btn-sm export-btn">💾 Backup Data to CSV</button>
+                <button id="adminButton" onclick="toggleAdmin()" class="btn-sm admin-btn">🔒 Admin Login</button>
+            </div>
+
+            <div class="table-container">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date / Location</th>
+                            <th>Details</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Assigned Tech / Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Content generated dynamically via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Local storage initialization for absolute persistence without databases
+    let orders = JSON.parse(localStorage.getItem('uwl_orders')) || [];
+    let isAdmin = false;
+    const adminPassword = "UWL2026";
+
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving...";
+
+        let beforePhoto = "";
+        try {
+            const photoFile = document.getElementById('beforePhoto').files[0];
+            if (photoFile) beforePhoto = await resizeImage(photoFile);
+        } catch (error) {
+            alert("The issue photo could not be processed. Please choose another image.");
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Request";
+            return;
+        }
+
+        const newOrder = {
+            id: "WO-" + (1000 + orders.length + 1),
+            date: new Date().toISOString().split('T')[0],
+            requester: document.getElementById('requester').value,
+            location: document.getElementById('location').value,
+            asset: document.getElementById('asset').value || "General Infrastructure",
+            priority: document.getElementById('priority').value,
+            description: document.getElementById('description').value,
+            status: "Pending",
+            tech: "",
+            beforePhoto,
+            afterPhoto: ""
+        };
+
+        orders.push(newOrder);
+        try {
+            saveAndRefresh();
+            document.getElementById('orderForm').reset();
+        } catch (error) {
+            orders.pop();
+            alert("The photo is too large to save in this browser. Please use a smaller image.");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Request";
+        }
+    });
+
+    function resizeImage(file) {
+        return new Promise((resolve, reject) => {
+            if (!file.type.startsWith('image/')) {
+                reject(new Error('Not an image'));
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onerror = reject;
+            reader.onload = () => {
+                const image = new Image();
+                image.onerror = reject;
+                image.onload = () => {
+                    const maxSize = 1280;
+                    const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.round(image.width * scale);
+                    canvas.height = Math.round(image.height * scale);
+                    canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.78));
+                };
+                image.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem('uwl_orders', JSON.stringify(orders));
+        renderTable();
+    }
+
+    function changeStatus(id, newStatus) {
+        const order = orders.find(o => o.id === id);
+        if(order) {
+            order.status = newStatus;
+            if (newStatus === "In Progress" && !order.tech) {
+                let techName = prompt("Enter Technician Name:");
+                if(techName) order.tech = techName;
+            }
+            saveAndRefresh();
+        }
+    }
+
+    function toggleAdmin() {
+        if (isAdmin) {
+            isAdmin = false;
+            updateAdminButton();
+            renderTable();
+            return;
+        }
+
+        const password = prompt("Enter admin password:");
+        if (password === adminPassword) {
+            isAdmin = true;
+            updateAdminButton();
+            renderTable();
+        } else if (password !== null) {
+            alert("Incorrect admin password.");
+        }
+    }
+
+    function updateAdminButton() {
+        const button = document.getElementById('adminButton');
+        button.textContent = isAdmin ? "🔓 Admin Logout" : "🔒 Admin Login";
+        button.classList.toggle('admin-active', isAdmin);
+    }
+
+    function deleteOrder(id) {
+        if (!isAdmin) {
+            alert("Admin access is required to delete job requests.");
+            return;
+        }
+
+        const order = orders.find(o => o.id === id);
+        if (!order) return;
+        if (!confirm(`Permanently delete ${order.id}: ${order.asset}?`)) return;
+
+        orders = orders.filter(o => o.id !== id);
+        saveAndRefresh();
+    }
+
+    async function completeOrder(id) {
+        const order = orders.find(o => o.id === id);
+        const proofInput = document.getElementById(`proof-${id}`);
+        const proofFile = proofInput && proofInput.files[0];
+
+        if (!order || !proofFile) {
+            alert("Upload a photo showing the completed repair before closing this work order.");
+            return;
+        }
+
+        try {
+            order.afterPhoto = await resizeImage(proofFile);
+            order.status = "Completed";
+            saveAndRefresh();
+        } catch (error) {
+            order.afterPhoto = "";
+            order.status = "In Progress";
+            alert("The repair proof could not be saved. Please use a smaller image and try again.");
+        }
+    }
+
+    function renderTable() {
+        const filter = document.getElementById('statusFilter').value;
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = "";
+
+        orders.forEach(order => {
+            if (filter !== "All" && order.status !== filter) return;
+
+            let priorityClass = "bg-" + order.priority.toLowerCase();
+            let statusClass = "bg-pending";
+            if (order.status === "In Progress") statusClass = "bg-progress";
+            if (order.status === "Completed") statusClass = "bg-completed";
+
+            let actionHtml = "";
+            if (order.status === "Pending") {
+                actionHtml = `<button class="btn-sm btn-warning" onclick="changeStatus('${order.id}', 'In Progress')">🚀 Start Job</button>`;
+            } else if (order.status === "In Progress") {
+                actionHtml = `<div class="repair-actions">
+                    <input class="proof-input" type="file" id="proof-${order.id}" accept="image/*" capture="environment" aria-label="Upload repair proof">
+                    <button class="btn-sm btn-success" onclick="completeOrder('${order.id}')">📷 Upload Proof & Close</button>
+                </div>`;
+            } else {
+                actionHtml = `<span style="color:var(--success); font-weight:bold;">Closed</span>`;
+            }
+
+            if (isAdmin) {
+                actionHtml += `<button class="btn-sm btn-danger" onclick="deleteOrder('${order.id}')">🗑️ Delete</button>`;
+            }
+
+            const photoHtml = `<div class="photo-list">
+                ${order.beforePhoto ? `<div class="photo-item"><small>Issue photo</small><a href="${order.beforePhoto}" target="_blank"><img class="photo-proof" src="${order.beforePhoto}" alt="Issue before repair"></a></div>` : ''}
+                ${order.afterPhoto ? `<div class="photo-item"><small>Repair proof</small><a href="${order.afterPhoto}" target="_blank"><img class="photo-proof" src="${order.afterPhoto}" alt="Completed repair proof"></a></div>` : ''}
+            </div>`;
+
+            const row = `<tr>
+                <td><strong>${order.id}</strong></td>
+                <td>
+                    <small>${order.date}</small><br>
+                    <strong>${order.location}</strong>
+                </td>
+                <td>
+                    <strong>${order.asset}</strong><br>
+                    <span style="color:#555;">${order.description}</span><br>
+                    <small style="color:#888;">By: ${order.requester}</small>
+                    ${photoHtml}
+                </td>
+                <td><span class="badge ${priorityClass}">${order.priority}</span></td>
+                <td><span class="badge ${statusClass}">${order.status}</span></td>
+                <td>
+                    <div><small>${order.tech ? '👤 ' + order.tech : '⚠️ Unassigned'}</small></div>
+                    <div class="actions-cell" style="margin-top:5px;">${actionHtml}</div>
+                </td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function exportToCSV() {
+        let csv = "ID,Date,Requester,Location,Asset,Priority,Description,Status,Technician\n";
+        orders.forEach(o => {
+            csv += `"${o.id}","${o.date}","${o.requester}","${o.location}","${o.asset}","${o.priority}","${o.description}","${o.status}","${o.tech}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `UWL_Maintenance_Backup_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    }
+
+    // Initial load
+    updateAdminButton();
+    renderTable();
+</script>
+
+</body>
+</html>
